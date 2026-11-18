@@ -1,0 +1,588 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Portal de Suporte TI</title>
+
+<style>
+:root {
+  --primary: #175cd3;
+  --dark: #101828;
+  --muted: #667085;
+  --background: #f5f7fb;
+  --border: #e4e7ec;
+  --white: #ffffff;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: "Segoe UI", Arial, sans-serif;
+  background: var(--background);
+  color: var(--dark);
+}
+
+.app { display: flex; min-height: 100vh; }
+
+.sidebar {
+  width: 245px;
+  background: #101d35;
+  color: white;
+  padding: 26px 18px;
+  flex-shrink: 0;
+}
+
+.brand {
+  font-size: 22px;
+  font-weight: 700;
+  margin-bottom: 45px;
+  padding-left: 12px;
+}
+
+.sidebar button {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 14px;
+  margin-bottom: 8px;
+  background: transparent;
+  border: 0;
+  border-radius: 9px;
+  color: #cbd5e1;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.sidebar button:hover,
+.sidebar button.active {
+  background: #263c60;
+  color: white;
+}
+
+.main { flex: 1; padding: 30px; min-width: 0; }
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 30px;
+}
+
+h1 { margin: 0 0 7px; font-size: 27px; }
+h2 { margin-top: 0; font-size: 19px; }
+.subtitle { color: var(--muted); margin: 0; }
+
+button, input, select, textarea { font: inherit; }
+
+.btn {
+  border: none;
+  padding: 12px 18px;
+  border-radius: 8px;
+  background: var(--primary);
+  color: white;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.btn:hover { background: #1249ac; }
+.btn.secondary { background: #eef2f7; color: #344054; }
+.btn.small { padding: 7px 10px; font-size: 12px; }
+
+.cards {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 18px;
+  margin-bottom: 25px;
+}
+
+.card, .panel {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 13px;
+  padding: 22px;
+}
+
+.card span { color: var(--muted); font-size: 13px; }
+.card strong { display: block; font-size: 30px; margin-top: 13px; }
+
+.panel { margin-bottom: 22px; }
+.panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.filters { display: flex; gap: 10px; flex-wrap: wrap; }
+
+input, select, textarea {
+  width: 100%;
+  padding: 11px;
+  border: 1px solid #d0d5dd;
+  border-radius: 8px;
+  background: white;
+  color: var(--dark);
+}
+
+textarea { min-height: 110px; resize: vertical; }
+label { display: block; font-weight: 600; margin-bottom: 7px; font-size: 13px; }
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+}
+
+.full { grid-column: 1 / -1; }
+.actions { display: flex; justify-content: flex-end; gap: 10px; }
+
+.table-wrap { overflow-x: auto; }
+
+table { width: 100%; border-collapse: collapse; min-width: 760px; }
+th, td { padding: 15px 12px; text-align: left; font-size: 13px; }
+th { color: var(--muted); background: #f9fafb; }
+td { border-bottom: 1px solid #eaecf0; }
+
+.badge {
+  display: inline-block;
+  border-radius: 20px;
+  padding: 5px 10px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.aberto { background: #fff1d6; color: #9a6700; }
+.andamento { background: #dbeafe; color: #1d4ed8; }
+.concluido { background: #dcfce7; color: #15803d; }
+.alta { color: #dc2626; font-weight: 700; }
+.media { color: #b45309; font-weight: 700; }
+.baixa { color: #15803d; font-weight: 700; }
+
+.hidden { display: none !important; }
+.empty { text-align: center; padding: 35px; color: var(--muted); }
+
+.modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(16,24,40,.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  z-index: 10;
+}
+
+.modal-content {
+  background: white;
+  border-radius: 14px;
+  padding: 25px;
+  width: 100%;
+  max-width: 560px;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.detail { margin-bottom: 13px; overflow-wrap: anywhere; }
+.detail strong { display: block; margin-bottom: 4px; }
+.detail p { white-space: pre-wrap; }
+
+@media(max-width: 1050px) {
+  .cards { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media(max-width: 700px) {
+  .app { flex-direction: column; }
+  .sidebar { width: 100%; padding: 15px; }
+  .brand { margin-bottom: 12px; }
+  .sidebar nav { display: flex; gap: 8px; }
+  .sidebar button { margin: 0; text-align: center; }
+  .main { padding: 18px; }
+  .header, .panel-header { flex-direction: column; align-items: stretch; }
+  .form-grid { grid-template-columns: 1fr; }
+  .cards { gap: 10px; }
+  .card { padding: 15px; }
+}
+</style>
+</head>
+
+<body>
+<div class="app">
+
+<aside class="sidebar">
+  <div class="brand">🖥️ Suporte TI</div>
+  <nav>
+    <button class="active" onclick="navegar('dashboard',this)">▦ Dashboard</button>
+    <button onclick="navegar('chamados',this)">☷ Chamados</button>
+    <button onclick="navegar('novo',this)">＋ Abrir chamado</button>
+  </nav>
+</aside>
+
+<main class="main">
+  <header class="header">
+    <div>
+      <h1 id="tituloPagina">Central de Suporte de TI</h1>
+      <p class="subtitle">Gerenciamento e acompanhamento de solicitações</p>
+    </div>
+    <button class="btn" onclick="navegar('novo')">+ Novo chamado</button>
+  </header>
+
+  <section id="dashboard">
+    <div class="cards">
+      <div class="card"><span>Total de chamados</span><strong id="total">0</strong></div>
+      <div class="card"><span>Chamados abertos</span><strong id="abertos">0</strong></div>
+      <div class="card"><span>Em andamento</span><strong id="andamento">0</strong></div>
+      <div class="card"><span>Concluídos</span><strong id="concluidos">0</strong></div>
+    </div>
+
+    <div class="panel">
+      <h2>Chamados recentes</h2>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Número</th><th>Assunto</th><th>Solicitante</th>
+              <th>Prioridade</th><th>Status</th><th>Ação</th>
+            </tr>
+          </thead>
+          <tbody id="tabelaRecentes"></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section id="chamados" class="hidden">
+    <div class="panel">
+      <div class="panel-header">
+        <h2>Gerenciamento de chamados</h2>
+        <div class="filters">
+          <input id="pesquisa" placeholder="Pesquisar chamado..." oninput="renderizar()">
+          <select id="filtroStatus" onchange="renderizar()">
+            <option value="">Todos os status</option>
+            <option>Aberto</option>
+            <option>Em andamento</option>
+            <option>Concluído</option>
+          </select>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Número</th><th>Assunto</th><th>Solicitante</th>
+              <th>Prioridade</th><th>Status</th><th>Ação</th>
+            </tr>
+          </thead>
+          <tbody id="tabelaChamados"></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section id="novo" class="hidden">
+    <div class="panel">
+      <h2>Abertura de chamado</h2>
+      <form id="formChamado" class="form-grid">
+        <div>
+          <label>Nome do solicitante *</label>
+          <input name="solicitante" required maxlength="100">
+        </div>
+        <div>
+          <label>E-mail corporativo *</label>
+          <input type="email" name="email" required>
+        </div>
+        <div>
+          <label>Departamento *</label>
+          <select name="departamento" required>
+            <option value="">Selecione</option>
+            <option>Administrativo</option>
+            <option>Financeiro</option>
+            <option>Recursos Humanos</option>
+            <option>Compras</option>
+            <option>Operações</option>
+            <option>Comercial</option>
+            <option>Outros</option>
+          </select>
+        </div>
+        <div>
+          <label>Categoria *</label>
+          <select name="categoria" required>
+            <option value="">Selecione</option>
+            <option>Computador / Notebook</option>
+            <option>Internet / Rede</option>
+            <option>E-mail / Outlook</option>
+            <option>Impressora</option>
+            <option>Software / Sistema</option>
+            <option>Power BI</option>
+            <option>Acesso / Senha</option>
+            <option>Outros</option>
+          </select>
+        </div>
+        <div>
+          <label>Prioridade *</label>
+          <select name="prioridade" required>
+            <option>Baixa</option>
+            <option selected>Média</option>
+            <option>Alta</option>
+          </select>
+        </div>
+        <div>
+          <label>Local / Unidade</label>
+          <input name="unidade" maxlength="100" placeholder="Ex.: Matriz">
+        </div>
+        <div class="full">
+          <label>Assunto *</label>
+          <input name="assunto" required maxlength="150"
+                 placeholder="Descreva brevemente o problema">
+        </div>
+        <div class="full">
+          <label>Descrição do problema *</label>
+          <textarea name="descricao" required
+                    placeholder="Informe os detalhes da solicitação"></textarea>
+        </div>
+        <div class="full actions">
+          <button type="button" class="btn secondary" onclick="navegar('dashboard')">Cancelar</button>
+          <button type="submit" class="btn">Registrar chamado</button>
+        </div>
+      </form>
+    </div>
+  </section>
+</main>
+</div>
+
+<div id="modal" class="modal hidden">
+  <div class="modal-content">
+    <div class="panel-header">
+      <h2 id="modalTitulo">Detalhes</h2>
+      <button class="btn secondary small" onclick="fecharModal()">Fechar</button>
+    </div>
+    <div id="detalhes"></div>
+    <label for="novoStatus">Atualizar status</label>
+    <select id="novoStatus">
+      <option>Aberto</option>
+      <option>Em andamento</option>
+      <option>Concluído</option>
+    </select>
+    <div class="actions" style="margin-top:20px">
+      <button class="btn" onclick="atualizarStatus()">Salvar alteração</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const CHAVE = "suporte_ti_chamados_v1";
+const CHAVE_SEQ = "suporte_ti_sequencia_v1";
+
+let chamados = carregar();
+let chamadoSelecionado = null;
+
+function carregar() {
+  try {
+    const dados = JSON.parse(localStorage.getItem(CHAVE) || "[]");
+    return Array.isArray(dados) ? dados : [];
+  } catch {
+    return [];
+  }
+}
+
+function salvar() {
+  localStorage.setItem(CHAVE, JSON.stringify(chamados));
+}
+
+function gerarNumero() {
+  const atual = Number(localStorage.getItem(CHAVE_SEQ) || "0");
+  const maior = Math.max(0, ...chamados.map(c => Number(c.id) || 0));
+  const proximo = Math.max(atual, maior) + 1;
+  localStorage.setItem(CHAVE_SEQ, String(proximo));
+  return proximo;
+}
+
+function navegar(pagina, botao = null) {
+  ["dashboard", "chamados", "novo"].forEach(id => {
+    document.getElementById(id).classList.toggle("hidden", id !== pagina);
+  });
+
+  const titulos = {
+    dashboard: "Central de Suporte de TI",
+    chamados: "Gerenciamento de Chamados",
+    novo: "Abrir Novo Chamado"
+  };
+
+  document.getElementById("tituloPagina").textContent = titulos[pagina];
+
+  document.querySelectorAll(".sidebar button").forEach(b => {
+    b.classList.remove("active");
+  });
+
+  const indice = ["dashboard", "chamados", "novo"].indexOf(pagina);
+  const botoes = document.querySelectorAll(".sidebar button");
+  if (indice >= 0) botoes[indice].classList.add("active");
+
+  renderizar();
+}
+
+document.getElementById("formChamado").addEventListener("submit", function(e) {
+  e.preventDefault();
+
+  const dados = new FormData(this);
+  const novo = {
+    id: gerarNumero(),
+    solicitante: String(dados.get("solicitante")).trim(),
+    email: String(dados.get("email")).trim(),
+    departamento: String(dados.get("departamento")),
+    categoria: String(dados.get("categoria")),
+    prioridade: String(dados.get("prioridade")),
+    unidade: String(dados.get("unidade")).trim(),
+    assunto: String(dados.get("assunto")).trim(),
+    descricao: String(dados.get("descricao")).trim(),
+    status: "Aberto",
+    data: new Date().toISOString()
+  };
+
+  chamados.unshift(novo);
+  salvar();
+  this.reset();
+  alert("Chamado #" + String(novo.id).padStart(5,"0") + " registrado!");
+  navegar("chamados");
+});
+
+function elemento(tag, texto, classe = "") {
+  const el = document.createElement(tag);
+  el.textContent = texto;
+  if (classe) el.className = classe;
+  return el;
+}
+
+function classeStatus(status) {
+  if (status === "Concluído") return "concluido";
+  if (status === "Em andamento") return "andamento";
+  return "aberto";
+}
+
+function criarLinha(chamado) {
+  const tr = document.createElement("tr");
+
+  tr.appendChild(elemento("td", "#" + String(chamado.id).padStart(5,"0")));
+  tr.appendChild(elemento("td", chamado.assunto));
+  tr.appendChild(elemento("td", chamado.solicitante));
+
+  const prioridade = document.createElement("td");
+  prioridade.appendChild(elemento(
+    "span",
+    chamado.prioridade,
+    chamado.prioridade === "Alta" ? "alta" :
+    chamado.prioridade === "Média" ? "media" : "baixa"
+  ));
+  tr.appendChild(prioridade);
+
+  const status = document.createElement("td");
+  status.appendChild(elemento("span", chamado.status,
+    "badge " + classeStatus(chamado.status)));
+  tr.appendChild(status);
+
+  const acao = document.createElement("td");
+  const btn = elemento("button", "Visualizar", "btn small");
+  btn.addEventListener("click", () => abrirModal(chamado.id));
+  acao.appendChild(btn);
+  tr.appendChild(acao);
+
+  return tr;
+}
+
+function preencherTabela(id, lista) {
+  const tbody = document.getElementById(id);
+  tbody.replaceChildren();
+
+  if (!lista.length) {
+    const tr = document.createElement("tr");
+    const td = elemento("td", "Nenhum chamado encontrado.", "empty");
+    td.colSpan = 6;
+    tr.appendChild(td);
+    tbody.appendChild(tr);
+    return;
+  }
+
+  lista.forEach(c => tbody.appendChild(criarLinha(c)));
+}
+
+function renderizar() {
+  document.getElementById("total").textContent = chamados.length;
+  document.getElementById("abertos").textContent =
+    chamados.filter(c => c.status === "Aberto").length;
+  document.getElementById("andamento").textContent =
+    chamados.filter(c => c.status === "Em andamento").length;
+  document.getElementById("concluidos").textContent =
+    chamados.filter(c => c.status === "Concluído").length;
+
+  const pesquisa = document.getElementById("pesquisa").value.toLowerCase();
+  const filtro = document.getElementById("filtroStatus").value;
+
+  const filtrados = chamados.filter(c => {
+    const texto = [c.id, c.assunto, c.solicitante, c.categoria]
+      .join(" ").toLowerCase();
+
+    return texto.includes(pesquisa) && (!filtro || c.status === filtro);
+  });
+
+  preencherTabela("tabelaChamados", filtrados);
+  preencherTabela("tabelaRecentes", chamados.slice(0, 5));
+}
+
+function adicionarDetalhe(container, rotulo, valor) {
+  const div = document.createElement("div");
+  div.className = "detail";
+  div.appendChild(elemento("strong", rotulo));
+  div.appendChild(elemento("p", String(valor || "Não informado")));
+  container.appendChild(div);
+}
+
+function abrirModal(id) {
+  const chamado = chamados.find(c => c.id === id);
+  if (!chamado) return;
+
+  chamadoSelecionado = id;
+  document.getElementById("modalTitulo").textContent =
+    "Chamado #" + String(id).padStart(5,"0");
+
+  const detalhes = document.getElementById("detalhes");
+  detalhes.replaceChildren();
+
+  adicionarDetalhe(detalhes, "Assunto", chamado.assunto);
+  adicionarDetalhe(detalhes, "Solicitante", chamado.solicitante);
+  adicionarDetalhe(detalhes, "E-mail", chamado.email);
+  adicionarDetalhe(detalhes, "Departamento", chamado.departamento);
+  adicionarDetalhe(detalhes, "Categoria", chamado.categoria);
+  adicionarDetalhe(detalhes, "Prioridade", chamado.prioridade);
+  adicionarDetalhe(detalhes, "Unidade", chamado.unidade);
+  adicionarDetalhe(detalhes, "Descrição", chamado.descricao);
+  adicionarDetalhe(detalhes, "Data de abertura",
+    new Date(chamado.data).toLocaleString("pt-BR"));
+
+  document.getElementById("novoStatus").value = chamado.status;
+  document.getElementById("modal").classList.remove("hidden");
+}
+
+function fecharModal() {
+  document.getElementById("modal").classList.add("hidden");
+  chamadoSelecionado = null;
+}
+
+function atualizarStatus() {
+  const chamado = chamados.find(c => c.id === chamadoSelecionado);
+  if (!chamado) return;
+
+  chamado.status = document.getElementById("novoStatus").value;
+  salvar();
+  fecharModal();
+  renderizar();
+  alert("Status atualizado com sucesso!");
+}
+
+renderizar();
+</script>
+</body>
+</html>
