@@ -1,1525 +1,3106 @@
-
 <!DOCTYPE html>
+
 <html lang="pt-BR">
+
 <head>
+
 <meta charset="UTF-8">
+
 <meta name="viewport" content="width=device-width, initial-scale=1">
+
 <title>PSV | Gestão de Projetos</title>
 
+
+
 <style>
+
 :root {
+
   --verde:#164b35;
+
   --escuro:#103525;
+
   --fundo:#f4f7f5;
+
   --texto:#243a2c;
+
   --cinza:#718176;
+
   --borda:#e0e9e2;
+
 }
+
 * {box-sizing:border-box}
+
 body {
+
   margin:0;background:var(--fundo);color:var(--texto);
+
   font:14px "Segoe UI",Arial,sans-serif;
+
 }
+
 button,input,select,textarea {font:inherit}
+
 button {cursor:pointer}
+
 button:disabled {opacity:.5;cursor:not-allowed}
+
 .layout {display:flex;min-height:100vh}
+
 .sidebar {
+
   width:245px;flex-shrink:0;padding:24px 15px;
+
   background:linear-gradient(155deg,#1a573e,#0b3022);
+
   color:white;
+
 }
+
 .marca {
+
   display:flex;align-items:center;gap:12px;
+
   padding:5px 8px 25px;border-bottom:1px solid #ffffff30;
+
   margin-bottom:25px;
+
 }
+
 .marca img {
+
   width:55px;height:55px;object-fit:contain;
+
   background:white;padding:5px;border-radius:8px;
+
 }
+
 .marca strong {font-size:17px}
+
 .marca small {display:block;color:#c3dccc;margin-top:5px}
+
 .menu {
+
   display:block;width:100%;border:0;
+
   background:transparent;color:#d9e8df;
+
   text-align:left;padding:14px;border-radius:9px;margin:5px 0;
+
 }
+
 .menu.ativo,.menu:hover {background:#ffffff25;color:white}
+
 .principal {flex:1;min-width:0}
+
 .topo {
+
   padding:23px 30px;background:white;
+
   border-bottom:1px solid var(--borda);
+
   font-size:17px;font-weight:700;
+
 }
+
 .conteudo {padding:30px;max-width:1500px;margin:auto}
+
 .pagina {display:none}
+
 .pagina.ativa {display:block}
+
 .cabecalho {
+
   display:flex;justify-content:space-between;
+
   align-items:center;gap:15px;flex-wrap:wrap;
+
   margin-bottom:22px;
+
 }
+
 h1 {font-size:25px;margin:0 0 6px}
+
 h2 {font-size:18px;margin:0 0 15px}
+
 h3 {font-size:15px}
+
 .subtitulo,.muted {color:var(--cinza);font-size:12px}
+
 .btn {
+
   border:0;border-radius:8px;padding:11px 16px;
+
   background:var(--verde);color:white;font-weight:650;
+
 }
+
 .btn.claro {background:#e5f3e9;color:var(--verde)}
+
 .btn.perigo {background:#fee8e8;color:#a42d2d}
+
 .btn.pequeno {padding:7px 11px;font-size:12px}
+
 .cards {
+
   display:grid;grid-template-columns:repeat(4,1fr);
+
   gap:16px;margin-bottom:22px;
+
 }
+
 .card,.painel {
+
   background:white;border:1px solid var(--borda);
+
   border-radius:13px;padding:21px;
+
   box-shadow:0 5px 20px #153a2410;
+
 }
+
 .card strong {
+
   display:block;font-size:32px;color:var(--verde);
+
   margin-top:10px;
+
 }
+
 .painel {margin-bottom:20px}
+
 .ferramentas,.acoes {
+
   display:flex;gap:10px;flex-wrap:wrap;align-items:center;
+
 }
+
 .ferramentas {margin-bottom:16px}
+
 .ferramentas input {flex:2;min-width:180px}
+
 .ferramentas select {flex:1;min-width:140px}
+
 input,select,textarea {
+
   width:100%;padding:11px;border:1px solid #d6e1d8;
+
   border-radius:8px;background:white;color:var(--texto);
+
 }
+
 input:focus,textarea:focus,select:focus {
+
   outline:none;border-color:#46946c;
+
 }
+
 textarea {min-height:90px;resize:vertical}
+
 label {display:block;font-size:12px;font-weight:650;margin-bottom:7px}
+
 .formulario {
+
   display:grid;grid-template-columns:1fr 1fr;gap:15px;
+
 }
+
 .inteiro {grid-column:1/-1}
+
 .tabela {overflow:auto}
+
 table {width:100%;border-collapse:collapse;font-size:12px}
+
 th {
+
   background:#f5f8f6;color:#63766a;
+
   padding:13px;text-align:left;white-space:nowrap;
+
 }
+
 td {padding:13px;border-bottom:1px solid #edf1ed}
+
 .status {
+
   display:inline-block;padding:5px 10px;border-radius:20px;
+
   font-size:11px;font-weight:700;
+
   background:#fff1cf;color:#8a6100;
+
 }
+
 .status.concluido {background:#e1f4e6;color:#1b793d}
+
 .status.andamento {background:#e7f0ff;color:#285d99}
+
 .status.aguardando {background:#fff0d3;color:#916400}
+
 .status.cancelado {background:#eee;color:#666}
+
 .status.atrasado {background:#ffe4e4;color:#a42c2c}
+
 .barra {
+
   height:8px;background:#e7eee9;
+
   border-radius:20px;overflow:hidden;min-width:90px;
+
 }
+
 .barra div {height:100%;background:#2f9560}
+
 .overlay {
+
   display:none;position:fixed;inset:0;z-index:10;
+
   background:#061b13ad;
+
   align-items:center;justify-content:center;padding:16px;
+
 }
+
 .overlay.visivel {display:flex}
+
 .modal {
+
   width:100%;max-width:900px;max-height:94vh;
+
   overflow:auto;background:white;border-radius:14px;padding:25px;
+
 }
+
 .modal-topo {
+
   display:flex;justify-content:space-between;
+
   align-items:center;gap:15px;margin-bottom:20px;
+
 }
+
 .modal-topo h2 {margin:0}
+
 .etapa {
+
   border:1px solid var(--borda);
+
   border-radius:11px;padding:17px;margin:12px 0;
+
 }
+
 .etapa-topo {
+
   display:flex;justify-content:space-between;
+
   gap:10px;align-items:center;
+
 }
+
 .etapa-numero {
+
   display:inline-block;
+
   background:#e5f3e9;color:#164b35;
+
   padding:6px 10px;border-radius:7px;
+
   margin-right:8px;white-space:nowrap;
+
 }
+
 .aviso {
+
   background:#f0f7f2;padding:13px;
+
   border-radius:9px;line-height:1.6;margin:15px 0;
+
 }
+
 .aviso-perigo {
+
   background:#fff0f0;border:1px solid #ffd1d1;
+
   padding:15px;border-radius:9px;margin-top:20px;
+
 }
+
 .aviso-perigo strong {color:#b42332}
+
 .detalhes {
+
   display:grid;grid-template-columns:repeat(3,1fr);gap:10px;
+
 }
+
 .detalhes div {background:#f6f9f7;padding:12px;border-radius:8px}
+
 .detalhes small {
+
   display:block;color:var(--cinza);margin-bottom:5px;
+
 }
+
 .linha {
+
   border:0;border-top:1px solid var(--borda);margin:22px 0;
+
 }
+
 .historico {
+
   padding:10px 0;border-bottom:1px solid var(--borda);
+
   color:var(--cinza);font-size:12px;line-height:1.6;
+
 }
+
 .vazio {text-align:center;color:var(--cinza);padding:30px}
+
 .direita {justify-content:flex-end}
+
 .oculto {display:none!important}
+
 @media(max-width:1000px) {
+
   .cards {grid-template-columns:repeat(2,1fr)}
+
 }
+
 @media(max-width:720px) {
+
   .layout {display:block}
+
   .sidebar {width:100%;padding:12px}
+
   .marca {padding:6px;margin-bottom:10px}
+
   .menu {display:inline-block;width:auto}
+
   .conteudo {padding:15px}
+
   .topo {padding:15px}
+
   .formulario,.detalhes {grid-template-columns:1fr}
+
 }
+
+
+/* Controle simples de acesso por e-mail */
+#tela-acesso {position:fixed;inset:0;z-index:100;background:linear-gradient(155deg,#1a573e,#0b3022);display:flex;align-items:center;justify-content:center;padding:20px}
+#tela-acesso.oculto {display:none!important}
+.caixa-acesso {background:#fff;width:100%;max-width:420px;border-radius:14px;padding:32px;box-shadow:0 15px 50px #0003}
+.caixa-acesso h1 {color:var(--verde);margin-bottom:10px}
+.caixa-acesso p {color:var(--cinza);line-height:1.5}
+.caixa-acesso .btn {width:100%;margin-top:14px}
+#erro-acesso {color:#a42d2d;min-height:20px;margin-top:12px;font-size:12px}
+#usuario-portal {font-size:12px;font-weight:400;color:var(--cinza);display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+
 </style>
+
 </head>
 
+
+
 <body>
-<div class="layout">
-  <aside class="sidebar">
-    <div class="marca">
-      <img src="logo.png" alt="PSV"
-           onerror="this.style.display='none'">
-      <div>
-        <strong>Excelência<br>Operacional</strong>
-        <small>PSV Soluções Inteligentes</small>
-      </div>
-    </div>
-    <button class="menu ativo" data-page="dashboard">▦ Dashboard</button>
-    <button class="menu" data-page="projetos">▣ Projetos</button>
-    <button class="menu" data-page="cronograma">◷ Cronograma</button>
-    <button class="menu" data-page="backup">⚙ Backup</button>
-  </aside>
-
-  <main class="principal">
-    <header class="topo">Gestão de Projetos</header>
-    <div class="conteudo">
-
-      <section class="pagina ativa" id="dashboard">
-        <div class="cabecalho">
-          <div>
-            <h1>Visão geral</h1>
-            <div class="subtitulo">Acompanhamento dos projetos</div>
-          </div>
-          <button class="btn" data-action="novo">+ Novo projeto</button>
-        </div>
-        <div class="cards" id="metricas"></div>
-        <div class="painel">
-          <h2>Projetos recentes</h2>
-          <div id="recentes"></div>
-        </div>
-      </section>
-
-      <section class="pagina" id="projetos">
-        <div class="cabecalho">
-          <div>
-            <h1>Projetos</h1>
-            <div class="subtitulo">Cadastro e acompanhamento</div>
-          </div>
-          <button class="btn" data-action="novo">+ Novo projeto</button>
-        </div>
-        <div class="painel">
-          <div class="ferramentas">
-            <input id="pesquisa"
-              placeholder="Pesquisar projeto, responsável ou CC">
-            <select id="filtro">
-              <option value="">Todos os status</option>
-              <option>Planejado</option>
-              <option>Em andamento</option>
-              <option>Concluído</option>
-              <option>Cancelado</option>
-            </select>
-          </div>
-          <div class="tabela">
-            <table>
-              <thead>
-                <tr>
-                  <th>Código</th>
-                  <th>Projeto</th>
-                  <th>Responsável</th>
-                  <th>Centro de custo</th>
-                  <th>Prazo</th>
-                  <th>Progresso</th>
-                  <th>Status</th>
-                  <th>Ação</th>
-                </tr>
-              </thead>
-              <tbody id="linhas-projetos"></tbody>
-            </table>
-          </div>
-        </div>
-      </section>
-
-      <section class="pagina" id="cronograma">
-        <div class="cabecalho">
-          <div>
-            <h1>Cronograma</h1>
-            <div class="subtitulo">Atividades e retornos pendentes</div>
-          </div>
-        </div>
-        <div class="painel tabela">
-          <table>
-            <thead>
-              <tr>
-                <th>Projeto</th>
-                <th>Etapa</th>
-                <th>Responsável</th>
-                <th>Aguardando</th>
-                <th>Prazo</th>
-                <th>Status</th>
-              </tr>
-            </thead>
-            <tbody id="linhas-cronograma"></tbody>
-          </table>
-        </div>
-      </section>
-
-      <section class="pagina" id="backup">
-        <div class="cabecalho">
-          <div>
-            <h1>Backup</h1>
-            <div class="subtitulo">Exportação e importação dos projetos</div>
-          </div>
-        </div>
-        <div class="painel">
-          <h2>Cópia de segurança</h2>
-          <p>Os registros ficam armazenados neste navegador.</p>
-          <div class="acoes">
-            <button class="btn" data-action="exportar">
-              Exportar projetos
-            </button>
-            <label class="btn claro" style="margin:0;cursor:pointer">
-              Importar backup
-              <input id="arquivo-backup" type="file"
-                accept=".json" style="display:none">
-            </label>
-          </div>
-        </div>
-      </section>
-
-    </div>
-  </main>
-</div>
-
-<div class="overlay" id="overlay">
-  <div class="modal">
-    <div class="modal-topo">
-      <h2 id="titulo-modal"></h2>
-      <button class="btn claro pequeno" data-action="fechar">
-        Fechar ✕
-      </button>
-    </div>
-    <div id="corpo-modal"></div>
+<div id="tela-acesso">
+  <div class="caixa-acesso">
+    <h1>Excelência Operacional</h1>
+    <p>PSV Soluções Inteligentes — Gestão de Projetos</p>
+    <form id="form-acesso">
+      <label for="email-acesso">E-mail corporativo</label>
+      <input id="email-acesso" type="email" placeholder="Digite seu e-mail" autocomplete="email" required>
+      <button class="btn" type="submit">Entrar no portal</button>
+      <div id="erro-acesso" role="alert" aria-live="polite"></div>
+    </form>
   </div>
 </div>
 
+
+
+<div class="layout">
+
+  <aside class="sidebar">
+
+    <div class="marca">
+
+      <img src="logo.png" alt="PSV"
+
+           onerror="this.style.display='none'">
+
+      <div>
+
+        <strong>Excelência<br>Operacional</strong>
+
+        <small>PSV Soluções Inteligentes</small>
+
+      </div>
+
+    </div>
+
+    <button class="menu ativo" data-page="dashboard">▦ Dashboard</button>
+
+    <button class="menu" data-page="projetos">▣ Projetos</button>
+
+    <button class="menu" data-page="cronograma">◷ Cronograma</button>
+
+    <button class="menu" data-page="backup">⚙ Backup</button>
+
+  </aside>
+
+
+
+  <main class="principal">
+
+    <header class="topo" style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap">Gestão de Projetos <span id="usuario-portal" class="oculto"><span id="email-conectado"></span><button class="btn pequeno claro" type="button" id="sair-portal">Sair</button></span></header>
+
+    <div class="conteudo">
+
+
+
+      <section class="pagina ativa" id="dashboard">
+
+        <div class="cabecalho">
+
+          <div>
+
+            <h1>Visão geral</h1>
+
+            <div class="subtitulo">Acompanhamento dos projetos</div>
+
+          </div>
+
+          <button class="btn" data-action="novo">+ Novo projeto</button>
+
+        </div>
+
+        <div class="cards" id="metricas"></div>
+
+        <div class="painel">
+
+          <h2>Projetos recentes</h2>
+
+          <div id="recentes"></div>
+
+        </div>
+
+      </section>
+
+
+
+      <section class="pagina" id="projetos">
+
+        <div class="cabecalho">
+
+          <div>
+
+            <h1>Projetos</h1>
+
+            <div class="subtitulo">Cadastro e acompanhamento</div>
+
+          </div>
+
+          <button class="btn" data-action="novo">+ Novo projeto</button>
+
+        </div>
+
+        <div class="painel">
+
+          <div class="ferramentas">
+
+            <input id="pesquisa"
+
+              placeholder="Pesquisar projeto, responsável ou CC">
+
+            <select id="filtro">
+
+              <option value="">Todos os status</option>
+
+              <option>Planejado</option>
+
+              <option>Em andamento</option>
+
+              <option>Concluído</option>
+
+              <option>Cancelado</option>
+
+            </select>
+
+          </div>
+
+          <div class="tabela">
+
+            <table>
+
+              <thead>
+
+                <tr>
+
+                  <th>Código</th>
+
+                  <th>Projeto</th>
+
+                  <th>Responsável</th>
+
+                  <th>Centro de custo</th>
+
+                  <th>Prazo</th>
+
+                  <th>Progresso</th>
+
+                  <th>Status</th>
+
+                  <th>Ação</th>
+
+                </tr>
+
+              </thead>
+
+              <tbody id="linhas-projetos"></tbody>
+
+            </table>
+
+          </div>
+
+        </div>
+
+      </section>
+
+
+
+      <section class="pagina" id="cronograma">
+
+        <div class="cabecalho">
+
+          <div>
+
+            <h1>Cronograma</h1>
+
+            <div class="subtitulo">Atividades e retornos pendentes</div>
+
+          </div>
+
+        </div>
+
+        <div class="painel tabela">
+
+          <table>
+
+            <thead>
+
+              <tr>
+
+                <th>Projeto</th>
+
+                <th>Etapa</th>
+
+                <th>Responsável</th>
+
+                <th>Aguardando</th>
+
+                <th>Prazo</th>
+
+                <th>Status</th>
+
+              </tr>
+
+            </thead>
+
+            <tbody id="linhas-cronograma"></tbody>
+
+          </table>
+
+        </div>
+
+      </section>
+
+
+
+      <section class="pagina" id="backup">
+
+        <div class="cabecalho">
+
+          <div>
+
+            <h1>Backup</h1>
+
+            <div class="subtitulo">Exportação e importação dos projetos</div>
+
+          </div>
+
+        </div>
+
+        <div class="painel">
+
+          <h2>Cópia de segurança</h2>
+
+          <p>Os registros ficam armazenados neste navegador.</p>
+
+          <div class="acoes">
+
+            <button class="btn" data-action="exportar">
+
+              Exportar projetos
+
+            </button>
+
+            <label class="btn claro" style="margin:0;cursor:pointer">
+
+              Importar backup
+
+              <input id="arquivo-backup" type="file"
+
+                accept=".json" style="display:none">
+
+            </label>
+
+          </div>
+
+        </div>
+
+      </section>
+
+
+
+    </div>
+
+  </main>
+
+</div>
+
+
+
+<div class="overlay" id="overlay">
+
+  <div class="modal">
+
+    <div class="modal-topo">
+
+      <h2 id="titulo-modal"></h2>
+
+      <button class="btn claro pequeno" data-action="fechar">
+
+        Fechar ✕
+
+      </button>
+
+    </div>
+
+    <div id="corpo-modal"></div>
+
+  </div>
+
+</div>
+
+
+
 <script>
+
 "use strict";
+
+/* Lista de e-mails autorizados (validação apenas no navegador) */
+const EMAILS_PERMITIDOS = [
+  "maria.oliveira@psvsolutions.com.br",
+  "joao.tavares@psvsolutions.com.br",
+  "enzo.carvalho@psvsolutions.com.br",
+  "ryan.campos@psvsolutions.com.br",
+  "leonardo.souza@psvsolutions.com.br"
+];
+const CHAVE_ACESSO = "psv_portal_email_sessao";
+function mostrarAcesso(email) {
+  const autorizado = EMAILS_PERMITIDOS.includes(email);
+  document.getElementById("tela-acesso").classList.toggle("oculto", autorizado);
+  document.getElementById("usuario-portal").classList.toggle("oculto", !autorizado);
+  document.getElementById("email-conectado").textContent = autorizado ? email : "";
+}
+document.getElementById("form-acesso").addEventListener("submit", function(evento) {
+  evento.preventDefault();
+  const email = document.getElementById("email-acesso").value.trim().toLowerCase();
+  if (!EMAILS_PERMITIDOS.includes(email)) {
+    document.getElementById("erro-acesso").textContent = "Acesso negado. E-mail não autorizado.";
+    return;
+  }
+  sessionStorage.setItem(CHAVE_ACESSO, email);
+  document.getElementById("erro-acesso").textContent = "";
+  mostrarAcesso(email);
+});
+document.getElementById("sair-portal").addEventListener("click", function() {
+  sessionStorage.removeItem(CHAVE_ACESSO);
+  document.getElementById("email-acesso").value = "";
+  mostrarAcesso("");
+});
+mostrarAcesso((sessionStorage.getItem(CHAVE_ACESSO) || "").toLowerCase());
+
+
+
 
 /* CONFIGURAÇÕES */
 
+
+
 const CHAVE = "psv_excelencia_projetos_codigo_v1";
+
 const CHAVE_SEQUENCIA = "psv_excelencia_sequencia_v1";
 
+
+
 const RESPONSAVEIS = [
+
   "Enzo Mendonça",
+
   "João Paulo Zanin Tavares",
+
   "Leonardo Soares de Souza",
+
   "Maria Julia Mangabeira",
+
   "Ryan Cristian Sousa Campos"
+
 ];
+
+
 
 const centrosDeCusto = [
+
 ["1200001","PRESIDENCIA"],
+
 ["1200002","DIRECAO"],
+
 ["1200003","FINANCEIRO"],
+
 ["1200004","COMERCIAL"],
+
 ["1200005","COMPRAS"],
+
 ["1200006","ALMOXARIFADO"],
+
 ["1200007","FROTA"],
+
 ["1200008","DP"],
+
 ["1200009","RH"],
+
 ["1200010","MANUTENCAO"],
+
 ["1200011","PROJETOS"],
+
 ["1200012","RECEBIMENTO/EXPEDICAO"],
+
 ["1200013","FACILITIES"],
+
 ["1200014","JURIDICO"],
+
 ["1200015","QUALIDADE"],
+
 ["1200016","SMS"],
+
 ["1200017","OPERACIONAL"],
+
 ["1200018","TI"],
+
 ["1200019","MARKETING"],
+
 ["1200020","EXCELENCIA OPERACIONAL"],
+
 ["1200021","CD - PSV"],
+
 ["1200997","PROCESSOS JUDICIAIS"],
+
 ["2120003","BRASKEM RS - LIMPEZA INDUSTRIAL"],
+
 ["2120005","ARLANXEO - E157/2019"],
+
 ["2120008","PETROBRAS TERIG"],
+
 ["2120011","GS INIMA INDUSTRIAL SA"],
+
 ["2120013","PETROBRAS TRANSPORTE TRANSPETRO – TERG"],
+
 ["2120014","BRASKEM RS - BRASKEM COMPLEMENTAR"],
+
 ["2120019","GERDAU SAPUCAIA DO SUL PG2022"],
+
 ["2120023","GERDAU CHARQUEADAS"],
+
 ["3120001","BRASKEM BA"],
+
 ["3130001","SPOTS BAHIA"],
+
 ["3130009","REFINARIA ACELEN - ROTINA"],
+
 ["3130010","PETROBRAS/ MG - CONT: 4600681954"],
+
 ["3130011","REFINARIA ACELEN - FL"],
+
 ["3130012","PG UPGN CATU - BA"],
+
 ["4120001","BASF GUARATINGUETA - ROTINA"],
+
 ["4120051","BRASKEM DUQUE DE CAXIAS - ROTINA"],
+
 ["4120154","NESTLE - ARACATUBA - ROTINA"],
+
 ["4120205","UTE TRES LAGOAS PINTURA-CONT:4600611358"],
+
 ["4120210","COMPANHIA BRASILEIRA - CONT: CX0002249"],
+
 ["4120211","PETROBRAS TRANSPORTE - CONT: 4600017227"],
+
 ["4120212","PETROLEO BRASILEIRO - MACAE/ RJ"],
+
 ["4120214","PETROBRAS TRANSPORTE - PAULINIA - SP"],
+
 ["4120215","PETROBRAS TRANSPORTE - SUZANO - SP"],
+
 ["4120216","PETROBRAS TRANSPORTE - GUARAREMA - SP"],
+
 ["4120218","PETROBRAS TRANSPORTE - SAO SEBASTIAO - S"],
+
 ["4120222","PETROBRAS TRANSPORTE - CUBATAO - SP"],
+
 ["4120223","PETROBRAS TRANSPORTE - GUARULHOS - SP"],
+
 ["4120224","PETROBRAS TRANSPORTE - CARAGUATATUBA-SP"],
+
 ["4120226","SUZANO IMPERATRIZ/ MA - CONT:122630"],
+
 ["4130001","KLABIN ORTIGUEIRA / PR - SPOT"],
+
 ["4130003","KLABIN PUMA - SPOT"],
+
 ["4130004","KLABIN TELEMACO BORBA / PR - SPOT"],
+
 ["4130005","KLABIN OTACILIO COSTA / SC - SPOT"],
+
 ["4130006","KLABIN ANGATUBA / SP - SPOT"],
+
 ["4130007","KLABIN CORREIA PINTO / SC – SPOT"],
+
 ["4130021","BASF JACAREI - SPOT"],
+
 ["4130051","SUZANO LIMEIRA - SPOT"],
+
 ["4130052","SUZANO JACAREI - SPOT"],
+
 ["4130053","SUZANO SUZANO - SPOT"],
+
 ["4130054","SUZANO IMPERATRIZ - SPOT"],
+
 ["4130055","SUZANO TRES LAGOAS - SPOT"],
+
 ["4130056","SUZANO MUCURI /BA - SPOT"],
+
 ["4130057","SUZANO ARACRUZ/ ES - SPOT"],
+
 ["4130083","GERDAU PINDAMONHANGABA"],
+
 ["4130091","GRAMO EMPREENDIMENTOS - REGAP - SPOT"],
+
 ["4130106","OWENS CORNING FIBERGLAS"],
+
 ["4130131","ELDORADO - TRES LAGOAS - SPOT"],
+
 ["4130161","AGCO DO BRASIL - SPOT"],
+
 ["4130191","SYLVAMO DO BRASIL LTDA MOGI"],
+
 ["4130192","SYLVAMO DO BRASIL LTDA LUIS ANTONIO"],
+
 ["4130301","NOVELIS PINDAMONHANGABA - SPOT"],
+
 ["4130381","YARA FERTILIZANTES - CUBATAO - SPOT"],
+
 ["4130391","WESTROCK TRES BARRAS / SC - SPOT"],
+
 ["4130431","MONSANTO SJC - SPOT"],
+
 ["4130541","LIOTECNICA - EMBU DAS ARTES / SP - SPOT"],
+
 ["4130561","PROLUMINAS - VARGINHA - SPOT"],
+
 ["4130593","QUALITY - DUQUE DE CAXIAS /RJ - SPOT"],
+
 ["4130705","CORTEVA JACAREI SPOT"],
+
 ["4130714","ARLANXEO BRASIL - SPOT"],
+
 ["4130719","NORMATEL ENGENHARIA / CUBATAO - SPOT"],
+
 ["4130721","BRASKEM QPAR/ SANTO ANDRE - SPOT"],
+
 ["4130722","CHEVRON ORONITE/ CAPUAVA MAUA - SPOT"],
+
 ["4130725","PETROM/ MOGI DAS CRUZES - SPOT"],
+
 ["4130729","SUZANO S.A MOGI DAS CRUZES - SPOT"],
+
 ["4130730","VERACEL EUNAPOLIS / BA - SPOT"],
+
 ["4130734","KLINGELE NOVA CAMPINA / SP - SPOT"],
+
 ["4130738","SUZANO S.A - BELEM/ PA - SPOT"],
+
 ["4130755","ETM ENGENHARIA LTDA – MAUA/ SP - SPOT"],
+
 ["4130761","PETROLEO RPBC - CUBATAO/ SP - SPOT"],
+
 ["4130768","ITUMBIARA BIOENERGIA - ITUMBIARA/GO"],
+
 ["4130769","FRUTAL BIOENERGIA - FRUTAL/MG"],
+
 ["4130771","TROPICAL BIOENERGIA - EDEIA/GO"],
+
 ["4130777","PEDRO AFONSO BIOENE - PEDRO AFONSO/TO"],
+
 ["4130778","ARCELORMITTAL - SERRA/ES"],
+
 ["4130779","BEONTAG - CAMPO MOURAO / PR"],
+
 ["4130783","REVAP / SP"],
+
 ["4130785","M CASSAB COMERCIO E INDUSTRIA LTDA – JAR"],
+
 ["4139998","FILIAL CAMPINAS / SP"],
+
 ["4139999","SPOT JACAREI"],
+
 ["7110001","ADMINISTRACAO CENTRAL - MONTES CLAROS"],
+
 ["7120001","PETROBRAS/ MG - CONT: 4600681954"],
+
 ["8130001","PETROBRAS/ REPAR - ARAUCARIA"],
+
 ["8130002","PETROBRAS/ REPAR - LIMPEZA PREDIAL"],
+
 ["8130003","ANSA"],
+
 ["8130004","PETROBRAS/ REPAR - FACILITIES ROTINA"]
+
 ];
 
+
+
 const filiais = [
+
   "BASF - GUARATINGUETA",
+
   "BRASKEM - DCX",
+
   "CABIÚNAS - MACAÉ",
+
   "GERDAU",
+
   "MATRIZ",
+
   "NORDESTE",
+
   "PARANÁ",
+
   "REVAP",
+
   "RPBC - CUBATÃO",
+
   "SUDESTE - SPOT",
+
   "SUL",
+
   "SUZANO - IMPERATRIZ",
+
   "TRANSPETRO"
+
 ];
+
+
 
 /* ARMAZENAMENTO */
 
+
+
 const $ = id => document.getElementById(id);
+
 let projetos = [];
 
+
+
 try {
+
   const dados = JSON.parse(localStorage.getItem(CHAVE));
+
   projetos = Array.isArray(dados) ? dados : [];
+
 } catch {
+
   projetos = [];
+
 }
 
+
+
 function salvar() {
+
   try {
+
     localStorage.setItem(CHAVE,JSON.stringify(projetos));
+
     return true;
+
   } catch {
+
     alert("Não foi possível salvar os dados.");
+
     return false;
+
   }
+
 }
+
+
 
 /* FUNÇÕES AUXILIARES */
 
+
+
 function escapar(v) {
+
   return String(v??"").replace(/[&<>"']/g,c=>({
+
     "&":"&amp;","<":"&lt;",">":"&gt;",
+
     '"':"&quot;","'":"&#39;"
+
   })[c]);
+
 }
+
+
 
 function hoje() {
+
   const d=new Date();
+
   return [
+
     d.getFullYear(),
+
     String(d.getMonth()+1).padStart(2,"0"),
+
     String(d.getDate()).padStart(2,"0")
+
   ].join("-");
+
 }
+
+
 
 function dataBR(v) {
+
   if (!v) return "—";
+
   const [a,m,d]=v.split("-");
+
   return `${d}/${m}/${a}`;
+
 }
+
+
 
 function identificadorEtapa() {
+
   return "E"+Date.now().toString(36)+
+
     Math.random().toString(36).slice(2,7);
+
 }
+
+
 
 function proximoCodigo() {
+
   const numeros=projetos.map(p=>{
+
     const m=String(p.id).match(/^Proj\.(\d+)$/);
+
     return m?Number(m[1]):0;
+
   });
+
+
 
   const ultimo=Math.max(
+
     0,...numeros,
+
     Number(localStorage.getItem(CHAVE_SEQUENCIA)||0)
+
   );
+
+
 
   return "Proj."+String(ultimo+1).padStart(4,"0");
+
 }
+
+
 
 function guardarSequencia(id) {
+
   const m=id.match(/^Proj\.(\d+)$/);
+
   if (!m) return;
 
+
+
   try {
+
     localStorage.setItem(
+
       CHAVE_SEQUENCIA,
+
       String(Math.max(
+
         Number(m[1]),
+
         Number(localStorage.getItem(CHAVE_SEQUENCIA)||0)
+
       ))
+
     );
+
   } catch(e) {
+
     console.warn(e);
+
   }
+
 }
+
+
 
 function percentual(p) {
+
   if (p.status==="Concluído") return 100;
+
   if (!p.etapas.length) return 0;
 
+
+
   return Math.round(
+
     p.etapas.filter(e=>e.status==="Concluído").length/
+
     p.etapas.length*100
+
   );
+
 }
+
+
 
 function progresso(p) {
+
   const n=percentual(p);
+
   return `
+
     <div style="display:flex;align-items:center;gap:8px">
+
       <div class="barra" style="flex:1">
+
         <div style="width:${n}%"></div>
+
       </div>
+
       <b>${n}%</b>
+
     </div>
+
   `;
+
 }
+
+
 
 function etiqueta(status) {
+
   const classes={
+
     "Concluído":"concluido",
+
     "Em andamento":"andamento",
+
     "Aguardando retorno":"aguardando",
+
     "Cancelado":"cancelado",
+
     "Atrasado":"atrasado"
+
   };
+
   return `<span class="status ${classes[status]||""}">
+
     ${escapar(status)}
+
   </span>`;
+
 }
+
+
 
 function atrasada(e,p) {
+
   if (["Concluído","Cancelado"].includes(p.status)) return false;
+
   if (e.status==="Concluído") return false;
+
   const prazo=e.aguardandoPrazo||e.prazo;
+
   return !!prazo && prazo<hoje();
+
 }
+
+
 
 function registrar(p,mensagem) {
+
   p.historico ||= [];
+
   p.historico.push({
+
     data:new Date().toISOString(),
+
     mensagem
+
   });
+
 }
+
+
 
 function abrirModal(titulo,html) {
+
   $("titulo-modal").textContent=titulo;
+
   $("corpo-modal").innerHTML=html;
+
   $("overlay").classList.add("visivel");
+
 }
+
+
 
 function fecharModal() {
+
   $("overlay").classList.remove("visivel");
+
 }
+
+
 
 function campo(nome,id,v="",tipo="text",obrigatorio=false) {
+
   return `<div>
+
     <label for="${id}">${escapar(nome)}${obrigatorio?" *":""}</label>
+
     <input id="${id}" type="${tipo}" value="${escapar(v)}"
+
       ${obrigatorio?"required":""}>
+
   </div>`;
+
 }
+
+
 
 function texto(nome,id,v="") {
+
   return `<div class="inteiro">
+
     <label for="${id}">${escapar(nome)}</label>
+
     <textarea id="${id}">${escapar(v)}</textarea>
+
   </div>`;
+
 }
+
+
 
 function opcoes(nome,id,lista,selecionado="") {
+
   return `<div>
+
     <label for="${id}">${escapar(nome)}</label>
+
     <select id="${id}">
+
       ${lista.map(v=>`
+
         <option value="${escapar(v)}"
+
           ${v===selecionado?"selected":""}>
+
           ${escapar(v)}
+
         </option>
+
       `).join("")}
+
     </select>
+
   </div>`;
+
 }
+
+
 
 function campoResponsavel(nome,id,selecionado="") {
+
   return `<div>
+
     <label for="${id}">${escapar(nome)} *</label>
+
     <select id="${id}" required>
+
       <option value="">Selecione o responsável</option>
+
       ${RESPONSAVEIS.map(n=>`
+
         <option value="${escapar(n)}"
+
           ${n===selecionado?"selected":""}>
+
           ${escapar(n)}
+
         </option>
+
       `).join("")}
+
     </select>
+
   </div>`;
+
 }
+
+
 
 function valor(id) {
+
   return ($(id)?.value||"").trim();
+
 }
+
+
 
 function projeto(id) {
+
   return projetos.find(p=>p.id===id);
+
 }
 
+
+
 function etapa(p,id) {
+
   return p.etapas.find(e=>e.id===id);
+
 }
+
+
 
 /* NOVO: ORDENAÇÃO AUTOMÁTICA DAS ETAPAS */
 
+
+
 function etapasOrdenadas(p) {
+
   return [...p.etapas].sort((a,b)=>{
+
     const prazoA=a.prazo||"9999-12-31";
+
     const prazoB=b.prazo||"9999-12-31";
 
+
+
     const comparacao=prazoA.localeCompare(prazoB);
+
     if (comparacao!==0) return comparacao;
 
+
+
     return String(a.id).localeCompare(String(b.id));
+
   });
+
 }
+
+
 
 function numeroDaEtapa(p,id) {
+
   return etapasOrdenadas(p).findIndex(e=>e.id===id)+1;
+
 }
 
+
+
 function navegar(nome) {
+
   document.querySelectorAll(".pagina").forEach(e=>
+
     e.classList.toggle("ativa",e.id===nome)
+
   );
+
   document.querySelectorAll(".menu").forEach(e=>
+
     e.classList.toggle("ativo",e.dataset.page===nome)
+
   );
+
   renderizar();
+
 }
+
+
 
 /* CRIAÇÃO DE PROJETOS */
 
+
+
 function criarProjeto() {
+
   const opcoesCC=centrosDeCusto.map(([codigo,nome])=>
+
     `<option value="${escapar(codigo+" - "+nome)}"></option>`
+
   ).join("");
 
+
+
   abrirModal("Criar novo projeto",`
+
     <div class="aviso">
+
       Preencha as informações principais.
+
       O código será gerado automaticamente.
+
     </div>
+
     <form id="form-projeto" class="formulario">
+
       <div class="inteiro">
+
         ${campo("Nome do projeto","nome","","text",true)}
+
       </div>
+
+
 
       ${campoResponsavel("Responsável geral","responsavel")}
+
       ${opcoes("Filial","filial",filiais,"MATRIZ")}
 
+
+
       <div class="inteiro">
+
         <label for="centro-custo">Centro de custo</label>
+
         <input id="centro-custo" list="lista-cc"
+
           autocomplete="off"
+
           placeholder="Digite o código ou nome do CC">
+
         <datalist id="lista-cc">${opcoesCC}</datalist>
+
       </div>
+
+
 
       ${campo("Data de início","inicio",hoje(),"date")}
+
       ${campo("Prazo final","prazo","","date")}
+
       ${texto("Objetivo / descrição","descricao")}
 
+
+
       <div class="acoes direita inteiro">
+
         <button type="button" class="btn claro"
+
           data-action="fechar">Cancelar</button>
+
         <button class="btn" type="submit">Criar projeto</button>
+
       </div>
+
     </form>
+
   `);
+
 }
 
+
+
 function salvarProjeto(e) {
+
   e.preventDefault();
 
+
+
   const nome=valor("nome");
+
   const responsavel=valor("responsavel");
+
   const cc=valor("centro-custo");
 
+
+
   if (!nome||!responsavel) {
+
     alert("Informe o nome e o responsável.");
+
     return;
+
   }
 
+
+
   if (cc && !centrosDeCusto.some(
+
     ([codigo,descricao])=>cc===codigo+" - "+descricao
+
   )) {
+
     alert("Selecione um centro de custo da lista.");
+
     return;
+
   }
+
+
 
   const codigo=proximoCodigo();
 
+
+
   const p={
+
     id:codigo,
+
     nome,
+
     responsavel,
+
     filial:valor("filial"),
+
     cc,
+
     inicio:valor("inicio"),
+
     prazo:valor("prazo"),
+
     descricao:valor("descricao"),
+
     status:"Planejado",
+
     etapas:[],
+
     historico:[]
+
   };
 
+
+
   registrar(p,"Projeto criado. Responsável: "+responsavel);
+
   projetos.push(p);
 
+
+
   if (salvar()) {
+
     guardarSequencia(codigo);
+
     navegar("projetos");
+
     gerenciarProjeto(p.id);
+
   } else {
+
     projetos.pop();
+
   }
+
 }
+
+
 
 /* GERENCIAMENTO DO PROJETO */
 
+
+
 function gerenciarProjeto(id) {
+
   const p=projeto(id);
+
   if (!p) return;
 
+
+
   const bloqueado=["Concluído","Cancelado"].includes(p.status);
+
   const pendentes=p.etapas.filter(e=>e.status!=="Concluído").length;
+
+
 
   /* ETAPAS ORDENADAS POR PRAZO E NUMERADAS */
 
+
+
   const etapas=p.etapas.length
+
     ? etapasOrdenadas(p).map((e,indice)=>`
+
       <div class="etapa">
+
         <div class="etapa-topo">
+
           <strong>
+
             <span class="etapa-numero">
+
               Etapa ${indice+1}.
+
             </span>
+
             ${escapar(e.nome)}
+
           </strong>
+
           ${etiqueta(e.status)}
+
         </div>
 
+
+
         <p class="muted">
+
           Responsável: ${escapar(e.responsavel)}
+
           · Prazo: ${dataBR(e.prazo)}
+
         </p>
 
+
+
         ${e.feito?`
+
           <p><b>O que foi feito:</b> ${escapar(e.feito)}</p>
+
         `:""}
+
+
 
         ${e.status==="Aguardando retorno"?`
+
           <div class="aviso">
+
             <b>Aguardando:</b> ${escapar(e.aguardandoPessoa)}<br>
+
             <b>O quê:</b> ${escapar(e.aguardandoItem)}<br>
+
             <b>Até:</b> ${dataBR(e.aguardandoPrazo)}
+
           </div>
+
         `:""}
+
+
 
         ${!bloqueado?`
+
           <div class="acoes">
+
             <button class="btn pequeno"
+
               data-action="andamento"
+
               data-id="${p.id}" data-etapa="${e.id}">
+
               Registrar andamento
+
             </button>
+
+
 
             <button class="btn claro pequeno"
+
               data-action="editar-etapa"
+
               data-id="${p.id}" data-etapa="${e.id}">
+
               Editar
+
             </button>
+
+
 
             <button class="btn perigo pequeno"
+
               data-action="excluir-etapa"
+
               data-id="${p.id}" data-etapa="${e.id}">
+
               Excluir etapa
+
             </button>
+
           </div>
+
         `:""}
+
       </div>
+
     `).join("")
+
     :'<div class="vazio">Nenhuma etapa cadastrada.</div>';
 
+
+
   abrirModal("Gerenciar projeto",`
+
     <h2>${escapar(p.id)} — ${escapar(p.nome)}</h2>
+
     ${etiqueta(p.status)}
+
     <p>${escapar(p.descricao||"Sem descrição")}</p>
 
+
+
     <div class="detalhes">
+
       <div>
+
         <small>Responsável</small>
+
         ${escapar(p.responsavel)}
+
       </div>
+
       <div>
+
         <small>Centro de custo</small>
+
         ${escapar(p.cc||"—")}
+
       </div>
+
       <div>
+
         <small>Prazo final</small>
+
         ${dataBR(p.prazo)}
+
       </div>
+
     </div>
+
+
 
     <div style="margin-top:18px">${progresso(p)}</div>
 
+
+
     <hr class="linha">
 
+
+
     <div class="cabecalho">
+
       <h2>Etapas do projeto</h2>
+
       ${!bloqueado?`
+
         <button class="btn"
+
           data-action="nova-etapa" data-id="${p.id}">
+
           + Adicionar etapa
+
         </button>
+
       `:""}
+
     </div>
 
+
+
     <p class="muted">
+
       Etapas organizadas automaticamente pela data limite
+
       de entrega, da mais próxima para a mais distante.
+
     </p>
+
+
 
     ${etapas}
 
+
+
     <hr class="linha">
+
+
 
     <h2>Finalização do projeto</h2>
 
+
+
     ${bloqueado?`
+
       <div class="aviso">
+
         Projeto ${escapar(p.status.toLowerCase())}.
+
       </div>
+
       <button class="btn claro"
+
         data-action="reabrir" data-id="${p.id}">
+
         Reabrir projeto
+
       </button>
+
     `:`
+
       <div class="aviso">
+
         ${!p.etapas.length
+
           ?"Adicione pelo menos uma etapa."
+
           :pendentes
+
           ?`Faltam ${pendentes} etapa(s) para concluir.`
+
           :"Todas as etapas foram concluídas. Você pode finalizar."}
+
       </div>
+
+
 
       <div class="acoes">
+
         <button class="btn"
+
           data-action="finalizar" data-id="${p.id}"
+
           ${!p.etapas.length||pendentes?"disabled":""}>
+
           ✓ Finalizar projeto
+
         </button>
+
+
 
         <button class="btn perigo"
+
           data-action="cancelar" data-id="${p.id}">
+
           Cancelar projeto
+
         </button>
+
       </div>
+
     `}
 
+
+
     <hr class="linha">
+
     <h2>Histórico do projeto</h2>
 
+
+
     ${(p.historico||[]).slice().reverse().map(h=>`
+
       <div class="historico">
+
         ${escapar(new Date(h.data).toLocaleString("pt-BR"))}
+
         — ${escapar(h.mensagem)}
+
       </div>
+
     `).join("")||'<p class="muted">Nenhuma movimentação.</p>'}
+
+
 
     <hr class="linha">
 
+
+
     <div class="aviso-perigo">
+
       <strong>Exclusão permanente</strong>
+
       <p>
+
         Ao excluir este projeto, todas as etapas e
+
         o histórico serão removidos definitivamente
+
         do armazenamento deste navegador.
+
       </p>
+
       <button class="btn perigo"
+
         data-action="excluir-projeto" data-id="${p.id}">
+
         Excluir projeto permanentemente
+
       </button>
+
     </div>
+
   `);
+
 }
+
+
 
 /* ETAPAS */
 
+
+
 function formularioEtapa(id,etapaId="") {
+
   const p=projeto(id);
+
   if (!p || ["Concluído","Cancelado"].includes(p.status)) return;
+
+
 
   const e=etapaId?etapa(p,etapaId):null;
 
+
+
   abrirModal(e?"Editar etapa":"Adicionar etapa",`
+
     <form id="form-etapa" class="formulario"
+
       data-id="${p.id}" data-etapa="${etapaId}">
+
       <div class="inteiro">
+
         ${campo("Nome da etapa / atividade","nome-etapa",
+
           e?.nome||"","text",true)}
+
       </div>
+
+
 
       ${campoResponsavel("Responsável pela etapa",
+
         "responsavel-etapa",e?.responsavel||p.responsavel)}
 
+
+
       ${campo("Prazo da etapa","prazo-etapa",
+
         e?.prazo||"","date",true)}
 
+
+
       <div class="acoes direita inteiro">
+
         <button type="button" class="btn claro"
+
           data-action="gerenciar" data-id="${p.id}">
+
           Voltar
+
         </button>
+
         <button type="submit" class="btn">Salvar etapa</button>
+
       </div>
+
     </form>
+
   `);
+
 }
 
+
+
 function salvarEtapa(e) {
+
   e.preventDefault();
 
+
+
   const form=e.target;
+
   const p=projeto(form.dataset.id);
+
   if (!p) return;
 
+
+
   const nome=valor("nome-etapa");
+
   const responsavel=valor("responsavel-etapa");
+
   const prazo=valor("prazo-etapa");
+
+
 
   if (!nome||!responsavel||!prazo) return;
 
+
+
   if (form.dataset.etapa) {
+
     const item=etapa(p,form.dataset.etapa);
+
     if (!item) return;
 
+
+
     const prazoAnterior=item.prazo;
+
     const responsavelAnterior=item.responsavel;
+
+
 
     Object.assign(item,{nome,responsavel,prazo});
 
-    registrar(p,
-      `Etapa editada: ${nome}. `+
-      `Prazo anterior: ${dataBR(prazoAnterior)}. `+
-      `Novo prazo: ${dataBR(prazo)}. `+
-      `Responsável anterior: ${responsavelAnterior}. `+
-      `Responsável atual: ${responsavel}.`
-    );
-  } else {
-    p.etapas.push({
-      id:identificadorEtapa(),
-      nome,responsavel,prazo,
-      status:"Pendente",
-      feito:"",
-      aguardandoPessoa:"",
-      aguardandoItem:"",
-      aguardandoPrazo:""
-    });
+
 
     registrar(p,
-      `Etapa adicionada: ${nome}. `+
-      `Responsável: ${responsavel}. Prazo: ${dataBR(prazo)}.`
+
+      `Etapa editada: ${nome}. `+
+
+      `Prazo anterior: ${dataBR(prazoAnterior)}. `+
+
+      `Novo prazo: ${dataBR(prazo)}. `+
+
+      `Responsável anterior: ${responsavelAnterior}. `+
+
+      `Responsável atual: ${responsavel}.`
+
     );
+
+  } else {
+
+    p.etapas.push({
+
+      id:identificadorEtapa(),
+
+      nome,responsavel,prazo,
+
+      status:"Pendente",
+
+      feito:"",
+
+      aguardandoPessoa:"",
+
+      aguardandoItem:"",
+
+      aguardandoPrazo:""
+
+    });
+
+
+
+    registrar(p,
+
+      `Etapa adicionada: ${nome}. `+
+
+      `Responsável: ${responsavel}. Prazo: ${dataBR(prazo)}.`
+
+    );
+
   }
+
+
 
   if (p.status==="Planejado") p.status="Em andamento";
 
+
+
   if (salvar()) {
+
     renderizar();
+
     gerenciarProjeto(p.id);
+
   }
+
 }
+
+
 
 /* REGISTRO DE ANDAMENTO */
 
+
+
 function registrarAndamento(id,etapaId) {
+
   const p=projeto(id);
+
   const e=p&&etapa(p,etapaId);
+
   if (!e) return;
 
+
+
   abrirModal("Registrar andamento",`
+
     <h3>
+
       Etapa ${numeroDaEtapa(p,e.id)}. — ${escapar(e.nome)}
+
     </h3>
 
+
+
     <form id="form-andamento" class="formulario"
+
       data-id="${p.id}" data-etapa="${e.id}">
+
+
 
       ${texto("O que foi feito até agora?","feito",e.feito)}
 
+
+
       <div class="inteiro">
+
         ${opcoes("Próximo passo","proximo",[
+
           "Em andamento",
+
           "Concluído",
+
           "Repassar para outro responsável",
+
           "Aguardando retorno"
+
         ],e.status)}
+
       </div>
+
+
 
       <div class="inteiro oculto" id="campos-repasse">
+
         ${campoResponsavel(
+
           "Quem está repassando a etapa?",
+
           "quem-repassou",e.responsavel
+
         )}
+
         ${campoResponsavel(
+
           "Nome do novo responsável","novo-responsavel"
+
         )}
+
       </div>
+
+
 
       <div class="inteiro oculto" id="campos-aguardando">
+
         ${campoResponsavel(
+
           "De quem estamos aguardando?",
+
           "aguardando-pessoa",e.aguardandoPessoa
+
         )}
+
         ${texto(
+
           "O que estamos aguardando?",
+
           "aguardando-item",e.aguardandoItem
+
         )}
+
         ${campo(
+
           "Data limite para retorno",
+
           "aguardando-prazo",e.aguardandoPrazo,"date"
+
         )}
+
       </div>
+
+
 
       <div class="acoes direita inteiro">
+
         <button type="button" class="btn claro"
+
           data-action="gerenciar" data-id="${p.id}">
+
           Voltar
+
         </button>
+
         <button type="submit" class="btn">
+
           Salvar andamento
+
         </button>
+
       </div>
+
     </form>
+
   `);
 
+
+
   atualizarCamposAndamento();
+
 }
+
+
 
 function atualizarCamposAndamento() {
+
   const proximo=valor("proximo");
+
+
 
   $("campos-repasse")?.classList.toggle(
+
     "oculto",proximo!=="Repassar para outro responsável"
+
   );
+
+
 
   $("campos-aguardando")?.classList.toggle(
+
     "oculto",proximo!=="Aguardando retorno"
+
   );
 
+
+
   ["quem-repassou","novo-responsavel"].forEach(id=>{
+
     if ($(id)) {
+
       $(id).required=
+
         proximo==="Repassar para outro responsável";
+
     }
+
   });
+
+
 
   ["aguardando-pessoa","aguardando-prazo"].forEach(id=>{
+
     if ($(id)) {
+
       $(id).required=proximo==="Aguardando retorno";
+
     }
+
   });
+
 }
+
+
 
 function salvarAndamento(e) {
+
   e.preventDefault();
 
+
+
   const form=e.target;
+
   const p=projeto(form.dataset.id);
+
   const item=p&&etapa(p,form.dataset.etapa);
+
   if (!item) return;
 
+
+
   const proximo=valor("proximo");
+
   const responsavelAnterior=item.responsavel;
+
   const quemRepassou=valor("quem-repassou");
+
   const novoResponsavel=valor("novo-responsavel");
 
+
+
   if (proximo==="Repassar para outro responsável") {
+
     if (!quemRepassou||!novoResponsavel) {
+
       alert("Informe quem repassou e o novo responsável.");
+
       return;
+
     }
+
     if (quemRepassou===novoResponsavel) {
+
       alert("Selecione um responsável diferente.");
+
       return;
+
     }
+
   }
+
+
 
   if (proximo==="Aguardando retorno" &&
+
       (!valor("aguardando-pessoa") ||
+
        !valor("aguardando-item") ||
+
        !valor("aguardando-prazo"))) {
+
     alert("Informe quem, o que e até quando está aguardando.");
+
     return;
+
   }
+
+
 
   item.feito=valor("feito");
+
   item.status=proximo==="Repassar para outro responsável"
+
     ?"Em andamento":proximo;
 
+
+
   if (proximo==="Repassar para outro responsável") {
+
     item.responsavel=novoResponsavel;
 
+
+
     registrar(p,
+
       `Etapa "${item.nome}" repassada por ${quemRepassou} `+
+
       `para ${novoResponsavel}. `+
+
       `Responsável anterior: ${responsavelAnterior}. `+
+
       (item.feito?"O que foi feito: "+item.feito:"")
+
     );
+
   } else {
+
     registrar(p,
+
       `Etapa "${item.nome}": ${proximo}. `+
+
       (item.feito?"O que foi feito: "+item.feito:"")
+
     );
+
   }
+
+
 
   item.aguardandoPessoa=proximo==="Aguardando retorno"
+
     ?valor("aguardando-pessoa"):"";
+
   item.aguardandoItem=proximo==="Aguardando retorno"
+
     ?valor("aguardando-item"):"";
+
   item.aguardandoPrazo=proximo==="Aguardando retorno"
+
     ?valor("aguardando-prazo"):"";
 
+
+
   if (salvar()) {
+
     renderizar();
+
     gerenciarProjeto(p.id);
+
   }
+
 }
+
+
 
 /* FINALIZAÇÃO */
 
+
+
 function finalizarProjeto(id) {
+
   const p=projeto(id);
 
+
+
   if (!p || !p.etapas.length ||
+
       p.etapas.some(e=>e.status!=="Concluído")) {
+
     alert("Conclua todas as etapas antes de finalizar.");
+
     return;
+
   }
+
+
 
   if (!confirm("Finalizar o projeto com 100% de conclusão?")) return;
 
+
+
   p.status="Concluído";
+
   p.finalizadoEm=new Date().toISOString();
+
   registrar(p,"Projeto finalizado — 100% concluído");
 
+
+
   if (salvar()) {
+
     renderizar();
+
     gerenciarProjeto(id);
+
   }
+
 }
+
+
 
 function cancelarProjeto(id) {
+
   const p=projeto(id);
+
   if (!p || !confirm("Cancelar este projeto?")) return;
 
+
+
   p.status="Cancelado";
+
   registrar(p,"Projeto cancelado");
 
+
+
   if (salvar()) {
+
     renderizar();
+
     gerenciarProjeto(id);
+
   }
+
 }
+
+
 
 function reabrirProjeto(id) {
+
   const p=projeto(id);
+
   if (!p || !confirm("Reabrir projeto?")) return;
 
+
+
   p.status="Em andamento";
+
   p.finalizadoEm=null;
+
   registrar(p,"Projeto reaberto");
 
+
+
   if (salvar()) {
+
     renderizar();
+
     gerenciarProjeto(id);
+
   }
+
 }
+
+
 
 /* EXCLUSÃO */
 
+
+
 function excluirEtapa(id,etapaId) {
+
   const p=projeto(id);
+
   const item=p&&etapa(p,etapaId);
+
+
 
   if (!item || !confirm("Excluir a etapa "+item.nome+"?")) return;
 
+
+
   p.etapas=p.etapas.filter(e=>e.id!==etapaId);
+
   registrar(p,"Etapa excluída: "+item.nome);
 
+
+
   if (salvar()) {
+
     renderizar();
+
     gerenciarProjeto(id);
+
   }
+
 }
+
+
 
 function excluirProjeto(id) {
+
   const p=projeto(id);
 
+
+
   if (!p) {
+
     alert("Projeto não encontrado.");
+
     return;
+
   }
+
+
 
   const confirmar=prompt(
+
     "ATENÇÃO!\n\n"+
+
     "Você está prestes a excluir permanentemente:\n\n"+
+
     p.id+" - "+p.nome+"\n\n"+
+
     "Todas as etapas e o histórico serão apagados.\n\n"+
+
     "Digite EXCLUIR para confirmar:"
+
   );
 
+
+
   if (confirmar!=="EXCLUIR") {
+
     alert("Exclusão cancelada.");
+
     return;
+
   }
+
+
 
   const anteriores=projetos;
+
   projetos=projetos.filter(item=>item.id!==id);
 
+
+
   if (salvar()) {
+
     fecharModal();
+
     renderizar();
+
     alert("Projeto "+p.id+" excluído permanentemente!");
+
   } else {
+
     projetos=anteriores;
+
     alert("Não foi possível excluir o projeto.");
+
   }
+
 }
+
+
 
 /* DASHBOARD, PROJETOS E CRONOGRAMA */
 
+
+
 function renderizar() {
+
   const ativos=projetos.filter(p=>
+
     ["Planejado","Em andamento"].includes(p.status)
+
   ).length;
+
+
 
   const concluidos=projetos.filter(p=>
+
     p.status==="Concluído"
+
   ).length;
 
+
+
   const atrasados=projetos.reduce(
+
     (n,p)=>n+p.etapas.filter(e=>atrasada(e,p)).length,0
+
   );
+
+
 
   $("metricas").innerHTML=[
+
     ["Total de projetos",projetos.length],
+
     ["Projetos ativos",ativos],
+
     ["Projetos concluídos",concluidos],
+
     ["Etapas atrasadas",atrasados]
+
   ].map(([nome,numero])=>`
+
     <div class="card">
+
       <span class="muted">${nome}</span>
+
       <strong>${numero}</strong>
+
     </div>
+
   `).join("");
 
+
+
   $("recentes").innerHTML=projetos.length
+
     ?projetos.slice(-5).reverse().map(p=>`
+
       <div class="etapa">
+
         <strong>${escapar(p.id)} — ${escapar(p.nome)}</strong>
+
         <p>${etiqueta(p.status)} · ${escapar(p.responsavel)}</p>
+
         ${progresso(p)}
+
         <p>
+
           <button class="btn pequeno claro"
+
             data-action="gerenciar" data-id="${p.id}">
+
             Gerenciar
+
           </button>
+
         </p>
+
       </div>
+
     `).join("")
+
     :'<div class="vazio">Nenhum projeto cadastrado.</div>';
 
+
+
   const pesquisa=$("pesquisa").value.toLowerCase();
+
   const filtro=$("filtro").value;
 
+
+
   const lista=projetos.filter(p=>
+
     [p.id,p.nome,p.responsavel,p.filial,p.cc]
+
       .join(" ").toLowerCase().includes(pesquisa)
+
     && (!filtro||p.status===filtro)
+
   );
 
+
+
   $("linhas-projetos").innerHTML=lista.length
+
     ?lista.slice().reverse().map(p=>`
+
       <tr>
+
         <td>${escapar(p.id)}</td>
+
         <td><b>${escapar(p.nome)}</b></td>
+
         <td>${escapar(p.responsavel)}</td>
+
         <td>${escapar(p.cc||"—")}</td>
+
         <td>${dataBR(p.prazo)}</td>
+
         <td>${progresso(p)}</td>
+
         <td>${etiqueta(p.status)}</td>
+
         <td>
+
           <button class="btn pequeno claro"
+
             data-action="gerenciar" data-id="${p.id}">
+
             Gerenciar
+
           </button>
+
         </td>
+
       </tr>
+
     `).join("")
+
     :'<tr><td colspan="8" class="vazio">Nenhum projeto encontrado.</td></tr>';
+
+
 
   /* CRONOGRAMA ORDENADO POR PRAZO */
 
+
+
   const agenda=projetos
+
     .filter(p=>!["Concluído","Cancelado"].includes(p.status))
+
     .flatMap(p=>
+
       etapasOrdenadas(p)
+
         .filter(e=>e.status!=="Concluído")
+
         .map(e=>({p,e}))
+
     )
+
     .sort((a,b)=>
+
       (a.e.aguardandoPrazo||a.e.prazo||"9999-12-31")
+
         .localeCompare(
+
           b.e.aguardandoPrazo||b.e.prazo||"9999-12-31"
+
         )
+
     );
 
+
+
   $("linhas-cronograma").innerHTML=agenda.length
+
     ?agenda.map(({p,e})=>`
+
       <tr>
+
         <td>${escapar(p.nome)}</td>
+
         <td>
+
           <b>Etapa ${numeroDaEtapa(p,e.id)}.</b>
+
           ${escapar(e.nome)}
+
         </td>
+
         <td>${escapar(e.responsavel)}</td>
+
         <td>
+
           ${escapar(e.aguardandoItem||"—")}
+
           ${e.aguardandoPessoa
+
             ?" — "+escapar(e.aguardandoPessoa):""}
+
         </td>
+
         <td>${dataBR(e.aguardandoPrazo||e.prazo)}</td>
+
         <td>${etiqueta(atrasada(e,p)?"Atrasado":e.status)}</td>
+
       </tr>
+
     `).join("")
+
     :'<tr><td colspan="6" class="vazio">Nenhuma etapa pendente.</td></tr>';
+
 }
+
+
 
 /* BACKUP */
 
+
+
 function exportar() {
+
   const dados=JSON.stringify({
+
     versao:1,
+
     projetos,
+
     exportadoEm:new Date().toISOString()
+
   },null,2);
 
+
+
   const blob=new Blob([dados],{type:"application/json"});
+
   const url=URL.createObjectURL(blob);
+
   const link=document.createElement("a");
 
+
+
   link.href=url;
+
   link.download="backup_projetos_psv_"+hoje()+".json";
+
   link.click();
 
+
+
   setTimeout(()=>URL.revokeObjectURL(url),1000);
+
 }
 
+
+
 async function importar(arquivo) {
+
   if (!arquivo) return;
 
+
+
   try {
+
     const dados=JSON.parse(await arquivo.text());
 
+
+
     if (!Array.isArray(dados.projetos) ||
+
         !dados.projetos.every(p=>
+
           p && typeof p.id==="string" &&
+
           typeof p.nome==="string" &&
+
           Array.isArray(p.etapas))) {
+
       throw new Error("Formato de backup inválido.");
+
     }
+
+
 
     if (!confirm("Substituir os projetos atuais pelo backup?")) return;
 
+
+
     const anteriores=projetos;
+
     projetos=dados.projetos;
 
+
+
     if (!salvar()) {
+
       projetos=anteriores;
+
       return;
+
     }
 
+
+
     projetos.forEach(p=>guardarSequencia(p.id));
+
     renderizar();
+
     alert("Backup importado com sucesso!");
+
   } catch(erro) {
+
     alert("Erro ao importar: "+erro.message);
+
   }
+
 }
+
+
 
 /* EVENTOS */
 
+
+
 document.addEventListener("click",e=>{
+
   const b=e.target.closest("[data-action],[data-page]");
+
   if (!b) return;
 
+
+
   if (b.dataset.page) {
+
     navegar(b.dataset.page);
+
     return;
+
   }
 
+
+
   const acao=b.dataset.action;
+
   const id=b.dataset.id;
+
   const etapaId=b.dataset.etapa;
 
+
+
   if (acao==="novo") criarProjeto();
+
   if (acao==="fechar") fecharModal();
+
   if (acao==="gerenciar") gerenciarProjeto(id);
+
   if (acao==="nova-etapa") formularioEtapa(id);
+
   if (acao==="editar-etapa") formularioEtapa(id,etapaId);
+
   if (acao==="andamento") registrarAndamento(id,etapaId);
+
   if (acao==="excluir-etapa") excluirEtapa(id,etapaId);
+
   if (acao==="finalizar") finalizarProjeto(id);
+
   if (acao==="cancelar") cancelarProjeto(id);
+
   if (acao==="reabrir") reabrirProjeto(id);
+
   if (acao==="excluir-projeto") excluirProjeto(id);
+
   if (acao==="exportar") exportar();
+
 });
+
+
 
 document.addEventListener("submit",e=>{
+
   if (e.target.id==="form-projeto") salvarProjeto(e);
+
   if (e.target.id==="form-etapa") salvarEtapa(e);
+
   if (e.target.id==="form-andamento") salvarAndamento(e);
+
 });
+
+
 
 document.addEventListener("change",e=>{
+
   if (e.target.id==="proximo") atualizarCamposAndamento();
+
 });
+
+
 
 $("pesquisa").addEventListener("input",renderizar);
+
 $("filtro").addEventListener("change",renderizar);
 
+
+
 $("arquivo-backup").addEventListener("change",e=>
+
   importar(e.target.files[0])
+
 );
 
+
+
 $("overlay").addEventListener("click",e=>{
+
   if (e.target===$("overlay")) fecharModal();
+
 });
+
+
 
 document.addEventListener("keydown",e=>{
+
   if (e.key==="Escape") fecharModal();
+
 });
 
+
+
 renderizar();
+
 </script>
+
 </body>
+
 </html>
